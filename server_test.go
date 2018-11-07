@@ -10,6 +10,7 @@ import (
 const addr = ":9090"
 const message = "sup?"
 
+//This test shows Run terminates when the context is cancelled.
 func TestRun(t *testing.T) {
 	//iterating ensures we are releasing all the resources we are using
 	//to prevent other tests from failing
@@ -55,6 +56,7 @@ func TestRun(t *testing.T) {
 	}
 }
 
+//This test shows Serve terminates when the context is cancelled.
 func TestServe(t *testing.T) {
 	//iterating ensures we are releasing all the resources we are using
 	//and increases the chance to find race conditions
@@ -102,6 +104,8 @@ func TestServe(t *testing.T) {
 	}
 }
 
+//This test shows PersistAndEcho writes the client's messages to the given channel
+//echos the messages back to the client and exists when the context is cancelled.
 func TestPersistAndEcho(t *testing.T) {
 	//for i:=0; i<100; i++ {
 	//	func() { // test is full of defers
