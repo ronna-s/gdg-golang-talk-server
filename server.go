@@ -132,13 +132,18 @@ func Run(addr string, ready chan struct{}, ctx context.Context) {
 func main() {
 	const addr = ":9090"
 
+	//create a cancellable context
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	//create a channel for singals, and register for signal interrupt.
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGINT)
 
 	go func() {
+		//upon receiving sigint, cancel the context
+		//if everything is done properly, the program will terminate gracefully
+		//if not, the prorgam will not exit and you will have to kill it.
 		<-sigc
 		log.Println("Received SIGINT... Canceling the context")
 		cancel()
@@ -152,7 +157,7 @@ func main() {
 		close(done)
 	}()
 
-	<-ready
+	<-ready //our signal from inside Run that the app is ready.
 	log.Println("App is ready to accept connections")
-	<-done
+	<-done //our signal that Run has finished and we can exit.
 }
